@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <style>
+        #movie{
+            display: grid;
+            grid-template-columns: repeat(4,25%);
+            
+            
+        }
+       
+        #movie img{
+
+            width: 70%; 
+            height: 200px; 
+            border: 2px solid black;
+        }
+        #inputbox{
+            width: 400px;
+            height: 150px;
+            background-color: bisque;
+            margin-left: 40%;
+        }
+        #name{
+            height:50px;
+            width: 300px;
+          
+        }
+        #sub{
+            width: 309px;
+            height: 30px;
+            background-color: whitesmoke;
+        }
+         #nof{
+            width: 500px;
+            height: 300px;
+        }
+        #recid{
+            color :red;
+            font-size: 25px;
+            background-color: yellowgreen;
+            justify-content: center;
+            width: 200px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            border: 1px solid blue;
+            
+        }
+        body{
+            background-color: bisque;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id = "inputbox">
+        <input type="text" placeholder="movie" id="name">
+        <button onclick="movie()" id="sub">Search</button>
+    </div>
+    <div id="movie"></div>
+</body>
+</html>
+<script>
+     function movie(){
+    //     let name= document.getElementById("name").value;
+    //     fetch(`http://www.omdbapi.com/?apikey=b0141aa&t=${name}`)
+    //     .then(function(res){
+    //         let abc = (res);
+    //         // window.location.href="http://www.omdbapi.com/?apikey=b0141aa&s=bahubali"
+    //         console.log(abc.url);
+    //     })
+    //     .catch(function(err){
+    //         console.log('err:',err);
+    //     })
+    // }
+        
+    
+
+          async function makeRequest() {
+    let name = document.getElementById("name").value;
+      let res = await fetch(`http://www.omdbapi.com/?apikey=b0141aa&s=${name}`)
+      let data = await res.json();
+
+      let res1 = await fetch(`http://www.omdbapi.com/?apikey=b0141aa&t=${name}`)
+              let data1 = await res1.json();
+              console.log("data1:",data1);
+      console.log(data);
+      let details = (data.Search);
+      var rating = data1.imdbRating;
+      if(details.Response === "False"){
+          let moviek = document.getElementById('movie')
+          var nof = document.createElement('img');
+          nof.src = "https://cdn.dribbble.com/users/1785628/screenshots/5605512/qonto-empty-state-illustration-search-no-result-tom-souverain.gif"
+           nof.id="nof";
+          let text = document.createElement('h3');
+          text.innerText="Movie Not Found"
+          moviek.append(nof,text);
+        }
+            else{
+                 for(let i = 0; i < details.length; i++){
+                console.log(details);
+                let movie = document.getElementById("movie");
+                let movie1 = document.createElement('div');
+                let m_name = document.createElement('p');
+                m_name.innerHTML = `Movie Name - ${details[i].Title}`;
+
+                let m_year = document.createElement('p');
+                m_year.innerHTML=`Release Year ${details[i].Year}`;
+
+                let m_rating = document.createElement('p');
+                m_rating.innerHTML = `Rating ${rating}`;
+                
+
+                 let m_lang = document.createElement('p');
+                    m_lang.innerHTML = `language - ${data1.Language}`;
+                     
+
+            
+                let m_img = document.createElement('img');
+                if(details[i].Poster == "N/A"){
+                    continue;
+                }
+                else{
+                    m_img.src = details[i].Poster;
+                }
+                    if(rating >= 8){
+                       let rec =  document.createElement('p');
+                        rec.innerHTML="Recommended";
+                       rec.id = "recid"
+
+                        movie1.append(m_img,rec, m_name, m_lang, m_rating, m_year);
+                        movie.append(movie1);
+                    }
+                    else{
+                        movie1.append(m_img, m_name,m_lang,m_rating,m_year);
+                        movie.append(movie1);
+                    }
+                    rating = rating;
+                 }
+            }
+          }
+    makeRequest();
+        }
+    
+</script>
+<!-- 
+// http://www.omdbapi.com/?i=tt3896198&apikey=b0141aa -->
